@@ -1,4 +1,4 @@
-using solDocs.Dtos;
+using solDocs.Dtos.User;
 using solDocs.Interfaces;
 using solDocs.Models;
 using Microsoft.AspNetCore.Authorization;

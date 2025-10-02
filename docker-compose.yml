@@ -23,7 +23,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017
       - MongoDbSettings__DatabaseName=${MONGO_DATABASE}
       - ASPNETCORE_URLS=http://+:80

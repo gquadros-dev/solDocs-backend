@@ -1,6 +1,6 @@
 using solDocs.Models;
 
-namespace solDocs.Dtos
+namespace solDocs.Dtos.Tenant
 {
     public class TenantResponseDto
     {
@@ -24,7 +24,7 @@ namespace solDocs.Dtos
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
 
-        public static TenantResponseDto FromTenant(Tenant tenant)
+        public static TenantResponseDto FromTenant(TenantModel tenant)
         {
             return new TenantResponseDto
             {

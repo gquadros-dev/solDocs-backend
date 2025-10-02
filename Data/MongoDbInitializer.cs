@@ -1,6 +1,7 @@
 using solDocs.Models;
 using MongoDB.Driver;
 using solDocs.Interfaces;
+using solDocs.Dtos.Tenant;
 
 namespace solDocs.Data
 {
@@ -58,7 +59,7 @@ namespace solDocs.Data
             if (defaultTenant == null)
             {
                 Console.WriteLine("Default tenant not found. Seeding...");
-                var tenantDto = new Dtos.CreateTenantDto
+                var tenantDto = new CreateTenantDto
                 {
                     Nome = "Default Tenant",
                     Slug = defaultTenantSlug,
@@ -79,7 +80,7 @@ namespace solDocs.Data
             {
                 Email = adminEmail,
                 Username = adminUsername,
-                Roles = new List<string> { "admin" },
+                Roles = new List<string> { "admin", "super_admin" },
                 TenantId = defaultTenant.Id
             };
 

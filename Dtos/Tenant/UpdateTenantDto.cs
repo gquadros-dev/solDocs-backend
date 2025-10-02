@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace solDocs.Dtos
+namespace solDocs.Dtos.Tenant
 {
     public class UpdateTenantDto
     {

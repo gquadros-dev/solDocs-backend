@@ -1,6 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace solDocs.Dtos
+namespace solDocs.Dtos.Article
 {
     public class ArticleInTopicDto
     {

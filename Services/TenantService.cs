@@ -1,4 +1,4 @@
-using solDocs.Dtos;
+using solDocs.Dtos.Tenant;
 using solDocs.Models;
 using MongoDB.Driver;
 using solDocs.Interfaces;
@@ -7,24 +7,24 @@ namespace solDocs.Services
 {
     public class TenantService : ITenantService
     {
-        private readonly IMongoCollection<Tenant> _tenants;
+        private readonly IMongoCollection<TenantModel> _tenants;
 
         public TenantService(IMongoDatabase database)
         {
-            _tenants = database.GetCollection<Tenant>("tenants");
+            _tenants = database.GetCollection<TenantModel>("tenants");
             
             // Criar índices únicos
-            var indexKeysSlug = Builders<Tenant>.IndexKeys.Ascending(t => t.Slug);
+            var indexKeysSlug = Builders<TenantModel>.IndexKeys.Ascending(t => t.Slug);
             var indexOptionsSlug = new CreateIndexOptions { Unique = true };
-            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<Tenant>(indexKeysSlug, indexOptionsSlug));
+            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<TenantModel>(indexKeysSlug, indexOptionsSlug));
 
-            var indexKeysEmail = Builders<Tenant>.IndexKeys.Ascending(t => t.Email);
+            var indexKeysEmail = Builders<TenantModel>.IndexKeys.Ascending(t => t.Email);
             var indexOptionsEmail = new CreateIndexOptions { Unique = true };
-            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<Tenant>(indexKeysEmail, indexOptionsEmail));
+            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<TenantModel>(indexKeysEmail, indexOptionsEmail));
 
-            var indexKeysDominio = Builders<Tenant>.IndexKeys.Ascending(t => t.Dominio);
+            var indexKeysDominio = Builders<TenantModel>.IndexKeys.Ascending(t => t.Dominio);
             var indexOptionsDominio = new CreateIndexOptions { Unique = true, Sparse = true };
-            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<Tenant>(indexKeysDominio, indexOptionsDominio));
+            _tenants.Indexes.CreateOneAsync(new CreateIndexModel<TenantModel>(indexKeysDominio, indexOptionsDominio));
         }
 
         public async Task<List<TenantResponseDto>> GetAllAsync()
@@ -93,7 +93,7 @@ namespace solDocs.Services
                     throw new InvalidOperationException("Domínio já está em uso");
             }
 
-            var tenant = new Tenant
+            var tenant = new TenantModel
             {
                 Nome = dto.Nome,
                 Slug = dto.Slug.ToLower(),
@@ -158,7 +158,7 @@ namespace solDocs.Services
                     throw new InvalidOperationException("Domínio já está em uso");
             }
 
-            var update = Builders<Tenant>.Update
+            var update = Builders<TenantModel>.Update
                 .Set(t => t.DataAtualizacao, DateTime.UtcNow);
 
             if (!string.IsNullOrWhiteSpace(dto.Nome))
@@ -215,10 +215,10 @@ namespace solDocs.Services
             if (dto.Configuracoes != null)
                 update = update.Set(t => t.Configuracoes, dto.Configuracoes);
 
-            var result = await _tenants.FindOneAndUpdateAsync<Tenant>(
+            var result = await _tenants.FindOneAndUpdateAsync<TenantModel>(
                 t => t.Id == id && !t.Deletado,
                 update,
-                new FindOneAndUpdateOptions<Tenant> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<TenantModel> { ReturnDocument = ReturnDocument.After }
             );
 
             return result != null ? TenantResponseDto.FromTenant(result) : null;
@@ -226,7 +226,7 @@ namespace solDocs.Services
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var update = Builders<Tenant>.Update
+            var update = Builders<TenantModel>.Update
                 .Set(t => t.Deletado, true)
                 .Set(t => t.DataDelecao, DateTime.UtcNow)
                 .Set(t => t.Ativo, false);

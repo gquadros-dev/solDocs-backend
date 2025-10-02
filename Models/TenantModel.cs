@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace solDocs.Models
 {
-    public class Tenant
+    public class TenantModel
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

@@ -1,7 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using solDocs.Dtos.Article;
 
-namespace solDocs.Dtos
+namespace solDocs.Dtos.Topic
 {
     public class TopicTreeDto
     {

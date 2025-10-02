@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using solDocs.Models;
 using MongoDB.Driver;
-using solDocs.Dtos;
+using solDocs.Dtos.Login;
 
 namespace solDocs.Services
 {

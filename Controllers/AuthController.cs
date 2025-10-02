@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using solDocs.Dtos;
+using solDocs.Dtos.Login;
 using solDocs.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

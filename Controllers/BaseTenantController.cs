@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using solDocs.Interfaces;
-using solDocs.Dtos;
+using solDocs.Dtos.Tenant;
 
 namespace solDocs.Controllers
 {

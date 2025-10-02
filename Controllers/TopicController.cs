@@ -1,7 +1,7 @@
 using AutoMapper;
 using solDocs.Interfaces;
 using solDocs.Models;
-using solDocs.Dtos;
+using solDocs.Dtos.Topic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 

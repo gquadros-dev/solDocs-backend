@@ -1,4 +1,4 @@
-namespace solDocs.Dtos
+namespace solDocs.Dtos.Topic
 {
     public class UpdateTopicTypeDto
     {

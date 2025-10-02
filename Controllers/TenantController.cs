@@ -1,4 +1,4 @@
-using solDocs.Dtos;
+using solDocs.Dtos.Tenant;
 using solDocs.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ namespace solDocs.Controllers
         /// Lista todos os tenants (apenas admin)
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "super_admin")]
         public async Task<ActionResult<List<TenantResponseDto>>> GetAll()
         {
             try
@@ -42,7 +42,7 @@ namespace solDocs.Controllers
         /// Busca tenant por ID
         /// </summary>
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "super_admin")]
         public async Task<ActionResult<TenantResponseDto>> GetById(string id)
         {
             try
@@ -75,7 +75,6 @@ namespace solDocs.Controllers
                 if (tenant == null)
                     return NotFound(new { message = "Tenant não encontrado" });
 
-                // Retornar apenas dados públicos
                 return Ok(new
                 {
                     tenant.Id,
@@ -134,7 +133,7 @@ namespace solDocs.Controllers
         /// Cria um novo tenant (apenas admin)
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "super_admin")]
         public async Task<ActionResult<TenantResponseDto>> Create([FromBody] CreateTenantDto dto)
         {
             try
@@ -160,7 +159,7 @@ namespace solDocs.Controllers
         /// Atualiza um tenant (apenas admin)
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "super_admin")]
         public async Task<ActionResult<TenantResponseDto>> Update(string id, [FromBody] UpdateTenantDto dto)
         {
             try
@@ -190,7 +189,7 @@ namespace solDocs.Controllers
         /// Deleta um tenant (soft delete - apenas admin)
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "super_admin")]
         public async Task<IActionResult> Delete(string id)
         {
             try

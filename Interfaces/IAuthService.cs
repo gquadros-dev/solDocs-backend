@@ -1,4 +1,4 @@
-using solDocs.Dtos;
+using solDocs.Dtos.Login;
 
 namespace solDocs.Interfaces
 {

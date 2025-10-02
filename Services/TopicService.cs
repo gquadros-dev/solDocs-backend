@@ -2,7 +2,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using solDocs.Interfaces;
 using solDocs.Models;
-using solDocs.Dtos;
+using solDocs.Dtos.Topic;
 
 namespace solDocs.Services
 {

@@ -2,7 +2,7 @@ using System.Security.Claims;
 using AutoMapper;
 using solDocs.Interfaces;
 using solDocs.Models;
-using solDocs.Dtos;
+using solDocs.Dtos.Article;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 

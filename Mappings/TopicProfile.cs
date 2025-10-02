@@ -1,6 +1,6 @@
 using AutoMapper;
 using solDocs.Models;
-using solDocs.Dtos;
+using solDocs.Dtos.Topic;
 
 namespace solDocs.Mappings
 {
