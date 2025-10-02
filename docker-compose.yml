@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:latest 
+    container_name: soldocs-db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db 
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  webapp:
+    container_name: soldocs-webapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017
+      - MongoDbSettings__DatabaseName=${MONGO_DATABASE}
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:
