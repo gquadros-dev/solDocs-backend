@@ -67,7 +67,7 @@ namespace solDocs.Controllers
         /// Cria um novo tópico.
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TopicModel>> CreateTopic([FromBody] CreateUpdateTopicDto topicDto)
@@ -92,7 +92,7 @@ namespace solDocs.Controllers
         /// Atualiza um tópico existente.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(typeof(TopicModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateTopic(string id, [FromBody] CreateUpdateTopicDto topicDto)
@@ -124,7 +124,7 @@ namespace solDocs.Controllers
         /// Exclui um tópico pelo seu ID.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteTopic(string id)
@@ -136,7 +136,7 @@ namespace solDocs.Controllers
         }
 
         [HttpPatch("{id}/type")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(typeof(TopicModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateTopicType(string id, [FromBody] UpdateTopicTypeDto dto)

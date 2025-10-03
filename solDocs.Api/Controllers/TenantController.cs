@@ -2,25 +2,94 @@ using solDocs.Dtos.Tenant;
 using solDocs.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using solDocs.Models;
 
 namespace solDocs.Controllers
 {
-
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/tenants")]
     public class TenantsController : ControllerBase
     {
         private readonly ITenantService _tenantService;
+        private readonly IUserService _userService;
         private readonly ILogger<TenantsController> _logger;
 
-        public TenantsController(ITenantService tenantService, ILogger<TenantsController> logger)
+        public TenantsController(ITenantService tenantService, IUserService userService, ILogger<TenantsController> logger)
         {
             _tenantService = tenantService;
+            _userService = userService;
             _logger = logger;
         }
 
         /// <summary>
-        /// Lista todos os tenants (apenas admin)
+        /// Registra um novo tenant e seu primeiro usuário admin (público).
+        /// </summary>
+        [HttpPost("register")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(TenantResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TenantResponseDto>> Register([FromBody] TenantRegistrationDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (await _userService.GetUserByEmailAsync(dto.AdminEmail) != null)
+            {
+                return BadRequest(new { message = "Este email já está em uso." });
+            }
+            if (await _userService.GetUserByUsernameAsync(dto.AdminUsername) != null)
+            {
+                return BadRequest(new { message = "Este nome de usuário já está em uso." });
+            }
+
+            TenantResponseDto newTenant = null;
+            try
+            {
+                var createTenantDto = new CreateTenantDto
+                {
+                    Nome = dto.TenantName,
+                    Slug = dto.TenantSlug,
+                    Email = dto.AdminEmail, 
+                    VencimentoDaLicenca = DateTime.UtcNow.AddDays(7),
+                    PlanoId = "trial",
+                    LimiteUsuarios = 3
+                };
+
+                newTenant = await _tenantService.CreateAsync(createTenantDto);
+
+                var adminUser = new UserModel
+                {
+                    Username = dto.AdminUsername,
+                    Email = dto.AdminEmail,
+                    Roles = new List<string> { "admin", "user" },
+                    TenantId = newTenant.Id
+                };
+
+                await _userService.CreateUserAsync(adminUser, dto.AdminPassword);
+
+                return CreatedAtAction(nameof(GetBySlug), new { slug = newTenant.Slug }, newTenant);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro durante o processo de registro para o slug {Slug}", dto.TenantSlug);
+                
+                if (newTenant != null)
+                {
+                    _logger.LogInformation("Iniciando rollback: deletando tenant recém-criado com ID {TenantId}", newTenant.Id);
+                    await _tenantService.DeleteAsync(newTenant.Id);
+                }
+                
+                return StatusCode(500, new { message = "Ocorreu um erro inesperado durante o registro. Nenhuma alteração foi feita." });
+            }
+        }
+
+
+        /// <summary>
+        /// Lista todos os tenants (apenas super_admin)
         /// </summary>
         [HttpGet]
         [Authorize(Roles = "super_admin")]
@@ -39,7 +108,7 @@ namespace solDocs.Controllers
         }
 
         /// <summary>
-        /// Busca tenant por ID
+        /// Busca tenant por ID (apenas super_admin)
         /// </summary>
         [HttpGet("{id}")]
         [Authorize(Roles = "super_admin")]
@@ -108,7 +177,6 @@ namespace solDocs.Controllers
                 if (tenant == null)
                     return NotFound(new { message = "Tenant não encontrado" });
 
-                // Retornar apenas dados públicos
                 return Ok(new
                 {
                     tenant.Id,
@@ -130,7 +198,7 @@ namespace solDocs.Controllers
         }
 
         /// <summary>
-        /// Cria um novo tenant (apenas admin)
+        /// Cria um novo tenant (apenas super_admin)
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "super_admin")]
@@ -156,7 +224,7 @@ namespace solDocs.Controllers
         }
 
         /// <summary>
-        /// Atualiza um tenant (apenas admin)
+        /// Atualiza um tenant (apenas super_admin)
         /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "super_admin")]
@@ -186,7 +254,7 @@ namespace solDocs.Controllers
         }
 
         /// <summary>
-        /// Deleta um tenant (soft delete - apenas admin)
+        /// Deleta um tenant (soft delete - apenas super_admin)
         /// </summary>
         [HttpDelete("{id}")]
         [Authorize(Roles = "super_admin")]

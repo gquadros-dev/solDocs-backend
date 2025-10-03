@@ -71,7 +71,7 @@ namespace solDocs.Controllers
         /// Cria um novo artigo.
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ArticleModel>> CreateArticle([FromBody] CreateArticleDto articleDto)
@@ -96,7 +96,7 @@ namespace solDocs.Controllers
         /// Atualiza um artigo existente.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateArticle(string id, [FromBody] UpdateArticleDto articleDto)
@@ -143,7 +143,7 @@ namespace solDocs.Controllers
         /// Exclui um artigo pelo seu ID.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteArticle(string id)
